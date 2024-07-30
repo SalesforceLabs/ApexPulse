@@ -1,0 +1,122 @@
+<template>
+    <lightning-card>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" large-device-size="7" class="slds-var-p-left_medium">
+                <template if:true={healthData}>
+                    <!-- sldsValidatorIgnoreNextLine -->
+                    <lightning-datatable
+                        key-field="id"
+                        data={healthData}
+                        columns={columns}
+                        min-column-width="100"
+                        hide-checkbox-column
+                        show-row-number-column
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </template>
+                <template if:true={error}>
+                    <p class="slds-text-color_error">{error}</p>
+                </template>
+                <template if:true={isLoading}>
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </template>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" large-device-size="5" class="slds-var-p-vertical_x-large slds-var-p-horizontal_xx-large">
+                <template if:true={selectedRecord}>
+                    <lightning-layout class="slds-var-p-bottom_xx-large">
+                        <lightning-layout-item size="5">
+                            <p class="slds-text-heading_medium"><b>{selectedRecord.Name}</b></p>
+                            <br>
+                            <br>
+                            <p><strong>Class Name:</strong></p>
+                            <p>
+                                <span title ="Click to open the apex class">
+                                    <a href={recordUrl} target="_blank" class="slds-text-link slds-text-link_reset">{selectedRecord.ClassName__c}</a>
+                                </span>
+                            </p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <div>
+                                <c-gauge-indicator-component score={score}></c-gauge-indicator-component>
+                            </div>
+                            <div class="slds-text-align_right">
+                                <p>Health Percentage (%)</p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Methods Present:</strong></p>
+                            <p>{selectedRecord.NbOfMethodsPresent__c}</p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Methods Used:</strong></p>
+                            <p>{selectedRecord.NbOfMethodsUsed__c}</p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Methods Unused:</strong></p>
+                            <p>{selectedRecord.NbOfMethodsUnused__c}</p>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <br>
+                    <lightning-accordion allow-multiple-sections-open
+                        active-section-name={activeMethodSections}>
+                        <lightning-accordion-section name="MethodsPresent" label="Methods Present:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.MethodsPresent__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="MethodsUsed" label="Methods Used:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.MethodsUsed__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="MethodsUnused" label="Methods Unused:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.MethodsUnused__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                    <br>
+                    <lightning-layout>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Variables Present:</strong></p>
+                            <p>{selectedRecord.NbOfVariablesPresent__c}</p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Variables Used:</strong></p>
+                            <p>{selectedRecord.NbOfVariablesUsed__c}</p>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <p><strong>Number of Variables Unused:</strong></p>
+                            <p>{selectedRecord.NbOfVariablesUnused__c}</p>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <br>
+                    <lightning-accordion allow-multiple-sections-open
+                        active-section-name={activeVariableSections}>
+                        <lightning-accordion-section name="VariablesPresent" label="Variables Present:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.VariablesPresent__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="VariablesUsed" label="Variables Used:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.VariablesUsed__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="VariablesUnused" label="Variables Unused:">
+                            <div class="scrollable-content">
+                                <p>{selectedRecord.VariablesUnused__c}</p>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </template>
+                <template if:false={selectedRecord}>
+                    <p>No record selected</p>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+        
+    </lightning-card>
+</template>

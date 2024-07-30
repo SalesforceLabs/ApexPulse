@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LoadId__c</fullName>
+    <description>It specifies the unique id for each load of apex health data</description>
+    <externalId>false</externalId>
+    <inlineHelpText>It specifies the unique id for each load of apex health data</inlineHelpText>
+    <label>Load Id</label>
+    <length>40</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

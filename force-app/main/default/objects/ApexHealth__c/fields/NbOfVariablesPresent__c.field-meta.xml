@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NbOfVariablesPresent__c</fullName>
+    <description>Indicates number of variables present in a class</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates number of variables present in a class</inlineHelpText>
+    <label>Nb Of Variables Present</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

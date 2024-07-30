@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Apex_Class_Details_to_Apex</name>
+        <label>Send Apex Class Details to Apex</label>
+        <locationX>182</locationX>
+        <locationY>650</locationY>
+        <actionName>ApexHealthUtility</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Final_Success_Message</targetReference>
+        </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Fault_Message_Screen</targetReference>
+        </faultConnector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>apexClassList</name>
+            <value>
+                <elementReference>apexClassCollection</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>ApexHealthUtility</nameSegment>
+        <versionSegment>1</versionSegment>
+    </actionCalls>
+    <apiVersion>61.0</apiVersion>
+    <assignments>
+        <description>Assign All Apex Classes to Collection</description>
+        <name>Assign_All_Apex_Classes_to_Collection</name>
+        <label>Assign All Apex Classes to Collection</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>apexClassCollection</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Get_Apex_Classes</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Send_Apex_Class_Details_to_Apex</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Assign Selective Apex Classes to Collection</description>
+        <name>Assign_Selective_Apex_Classes_to_Collection</name>
+        <label>Assign Selective Apex Classes to Collection</label>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>apexClassCollection</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>selectedApexClassIdList</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Send_Apex_Class_Details_to_Apex</targetReference>
+        </connector>
+    </assignments>
+    <choices>
+        <name>All_Apex_Classes</name>
+        <choiceText>All Apex Classes</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>All Apex Classes</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Specific_Apex_Class</name>
+        <choiceText>Specific Apex Class</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Specific Apex Class</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <description>Determine Apex Classes Selection</description>
+        <name>Determine_Apex_Classes_Selection</name>
+        <label>Determine Apex Classes Selection</label>
+        <locationX>182</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Selective_Apex_Classes_to_Collection</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Selective Apex Classes?</defaultConnectorLabel>
+        <rules>
+            <name>All_Apex_Classes_Selected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Do_you_want_to_scan</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>All_Apex_Classes</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_All_Apex_Classes_to_Collection</targetReference>
+            </connector>
+            <label>All Apex Classes?</label>
+        </rules>
+    </decisions>
+    <description>This screen flow takes the user&apos;s preference on which apex class they want to scan.</description>
+    <environments>Default</environments>
+    <interviewLabel>Screen: Apex Health Apex Classes Selection For Scanning {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Screen: Apex Health Apex Classes Selection For Scanning</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <description>Get all the apex classes from the org excluding Managed Package Classes</description>
+        <name>Get_Apex_Classes</name>
+        <label>Get Apex Classes</label>
+        <locationX>182</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Screen_Apex_Classes_Selection</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Fault_Message_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>1 AND 2 AND (NOT(3)) AND (NOT(4))</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Active</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>NamespacePrefix</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>$Label.ApexHealthApexNameIgnoreCase</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>StartsWith</operator>
+            <value>
+                <elementReference>$Label.ApexHealthApexNameStartsWith</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>ApexClass</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <description>Fault Message Screen</description>
+        <name>Fault_Message_Screen</name>
+        <label>Fault Message Screen</label>
+        <locationX>842</locationX>
+        <locationY>242</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>DisplayErrorMessage</name>
+            <fieldText>&lt;p&gt;Oops Error Occurred! Please try again or contact your System Administrator.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <description>Final Success Message</description>
+        <name>Final_Success_Message</name>
+        <label>Final Success Message</label>
+        <locationX>182</locationX>
+        <locationY>758</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SuccessMessage</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;Success!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;The requested Apex Class(es) scan is in progress and you will receive an email once it is completed. Take a look at the &lt;strong&gt;&lt;em&gt;Dashboard Tab&lt;/em&gt;&lt;/strong&gt; to view the scan results.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Okay</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <description>Screen to take consent from the user whether to scan all the apex classes or specific apex class.</description>
+        <name>Screen_Apex_Classes_Selection</name>
+        <label>Screen: Apex Classes Selection</label>
+        <locationX>182</locationX>
+        <locationY>242</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Determine_Apex_Classes_Selection</targetReference>
+        </connector>
+        <fields>
+            <name>Do_you_want_to_scan</name>
+            <choiceReferences>All_Apex_Classes</choiceReferences>
+            <choiceReferences>Specific_Apex_Class</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Do you want to scan</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Apex_Classes_List</name>
+            <dataTypeMappings>
+                <typeName>T</typeName>
+                <typeValue>ApexClass</typeValue>
+            </dataTypeMappings>
+            <extensionName>flowruntime:datatable</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>List of Apex Classes from Your Org</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>selectionMode</name>
+                <value>
+                    <stringValue>MULTI_SELECT</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>minRowSelection</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>shouldDisplayLabel</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>tableData</name>
+                <value>
+                    <elementReference>Get_Apex_Classes</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>isShowSearchBar</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>columns</name>
+                <value>
+                    <stringValue>[{&quot;apiName&quot;:&quot;Name&quot;,&quot;guid&quot;:&quot;column-3f09&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;label&quot;:&quot;Name&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;ApiVersion&quot;,&quot;guid&quot;:&quot;column-5142&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;label&quot;:&quot;Api Version&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;CreatedDate&quot;,&quot;guid&quot;:&quot;column-456d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;label&quot;:&quot;Created Date&quot;,&quot;type&quot;:&quot;customDateTime&quot;}]</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>maxRowSelection</name>
+                <value>
+                    <numberValue>10.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>selectedApexClassIdList</assignToReference>
+                <name>selectedRows</name>
+            </outputParameters>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Do_you_want_to_scan</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Specific_Apex_Class</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <nextOrFinishButtonLabel>Submit</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Apex_Classes</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <description>Apex Class records collection</description>
+        <name>apexClassCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>ApexClass</objectType>
+    </variables>
+    <variables>
+        <description>Selected Apex Class Id List</description>
+        <name>selectedApexClassIdList</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>ApexClass</objectType>
+    </variables>
+</Flow>
